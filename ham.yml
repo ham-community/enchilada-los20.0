@@ -1,0 +1,112 @@
+title: "Lineage OS 20.0 (Enchilada) (Signed)"
+version: "0.1.0"
+
+args:
+  - id: android_certs
+    prompt: "Path to Android Certs .zip file Un-Encrypted"
+    required: true
+    type: file
+
+  - id: github_token
+    prompt: "Github Repo Token"
+    required: false
+    type: secret
+
+  - id: github_user
+    prompt: "Github Username"
+    required: false
+    type: value
+
+  - id: github_repo
+    prompt: "Github Repo"
+    required: false
+    type: value
+
+  # Sets a env var UPDATER_URL="The Users Input" 
+  - id: updater_url
+    prompt: "Updater URL"
+    required: false
+    type: value
+
+build:
+  - name: Set Python3 as Default
+    run: |
+      apt install -y -qq python-is-python3
+
+  - name: Install GO Tools
+    run: /ham-recipe/scripts/install-go-tools.sh
+
+  - name: Copy Android Certificates
+    run: |
+      cd /root/
+      cp $ANDROID_CERTS certs.zip
+      rm -rf .android-certs
+      mkdir -p .android-certs
+      mv certs.zip .android-certs/certs.zip
+      cd .android-certs
+      unzip certs.zip
+      openssl pkcs8 -in releasekey.pk8 -inform DER -out releasekey.key -nocrypt
+      openssl pkcs8 -in releasekey.pk8 -inform DER -out releasekey -nocrypt
+      openssl pkcs8 -in platform.pk8 -inform DER -out platform -nocrypt
+      openssl pkcs8 -in shared.pk8 -inform DER -out shared -nocrypt
+      openssl pkcs8 -in media.pk8 -inform DER -out media -nocrypt
+      openssl pkcs8 -in networkstack.pk8 -inform DER -out networkstack -nocrypt
+      openssl pkcs8 -in testkey.pk8 -inform DER -out testkey -nocrypt
+      rm -rf certs.zip
+      cd /ham-build
+
+  - name: Make Required Directories
+    run: |
+      cd /ham-build
+      mkdir -p android
+
+  - name: Repo Init LineageOS-20.0
+    run: |
+      cd /ham-build/android
+      repo init -u https://github.com/LineageOS/android.git -b lineage-20.0 --git-lfs < /dev/null
+      repo sync -j20 -c < /dev/null
+      mkdir -p .repo/local_manifests
+
+  - name: Add F-Droid PrivilegedExtensions 
+    run: cp /ham-recipe/source/F-DroidPrivilegedExtension.xml /ham-build/android/.repo/local_manifests
+
+  - name: Add The Muppets
+    run: cp /ham-recipe/source/TheMuppets.xml /ham-build/android/.repo/local_manifests
+
+  - name: Patch LineageOS to Enable AVB
+    run: |
+      patch /ham-build/android/build/make/core/Makefile /ham-recipe/patches/core_Makefile.patch
+      patch /ham-build/android/build/tools/releasetools/add_img_to_target_files.py /ham-recipe/patches/add_img_to_target_files.py.patch
+      patch /ham-build/android/build/tools/releasetools/sign_target_files_apks.py /ham-recipe/patches/sign_target_files_apks.py.patch
+
+  - name: Change Updater URL
+    run: /ham-recipe/scripts/add-updater-url.sh
+
+  - name: Patch LineageOS Updater
+    run: patch /ham-build/android/packages/apps/Updater/app/src/main/java/org/lineageos/updater/misc/Utils.java /ham-recipe/patches/updater-canInstall.patch
+
+  - name: Add Extra Vender
+    run: /ham-recipe/scripts/add-vendor-extra.sh
+
+  - name: Remove LineageOS Keys
+    run: /ham-recipe/scripts/remove-lineage-keys.sh
+
+  - name: Repo Sync
+    run: |
+      cd /ham-build/android
+      repo sync -j20 -c < /dev/null
+
+  - name: Breakfast Enchilada
+    run: /ham-recipe/scripts/build-prep.sh
+
+  - name: Download Firmware
+    run: /ham-recipe/scripts/download-stock-os.sh
+
+  - name: Extract Radio Blobs
+    run: /ham-recipe/scripts/get-images.sh
+
+  - name: Make, Sign and Release
+    run: /ham-recipe/scripts/make-and-sign.sh
+
+post_build:
+  - /ham-recipe/scripts/upload.sh
