@@ -5,4 +5,10 @@
       path="vendor/oneplus/enchilada"
       revision="lineage-20" 
       clone-depth="1" />
+
+   <project 
+      name="TheMuppets/proprietary_vendor_oneplus_sdm845-common" 
+      path="vendor/oneplus/sdm845-common"
+      revision="lineage-20" 
+      clone-depth="1" />
 </manifest>
