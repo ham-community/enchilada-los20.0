@@ -1,5 +1,5 @@
-title: "Lineage OS 20.0 (Enchilada) (Signed)"
-version: "0.1.0"
+title: "Lineage OS 20.0 (Enchilada) (MindTheGapps) (Signed)"
+version: "0.1.1"
 
 args:
   - id: android_certs
