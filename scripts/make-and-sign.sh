@@ -7,10 +7,10 @@ TODAY=$(date +"%Y%m%d")
 OUT=/ham-build/android/out/target/product/$LOS_DEVICE
 PKGNAME=lineage-20.0-$TODAY-release-$LOS_DEVICE-signed
 
-export PATH=$PATH:/ham-build/android/out/host/linux-x86:/ham-build/android/out/host/linux-x86/bin:/ham-build/android/build/make/tools/releasetools:/ham-build/android/out/soong/host/linux-x86/bin
+export PATH=$PATH:/ham-build/android/out/host/linux-x86:/ham-build/android/out/host/linux-x86/bin:/ham-build/android/build/make/tools/releasetools:/ham-build/android/out/soong/host/linux-x86/bin:/ham-build/android/prebuilts/jdk/jdk11/linux-x86/bin
 
 # Add the LOS java library paths to the environment.
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/ham-build/android/out/host/linux-x86/lib:/ham-build/android/out/host/linux-x86/lib64
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/ham-build/android/out/host/linux-x86/lib:/ham-build/android/out/host/linux-x86/lib64:/ham-build/android/prebuilts/jdk/jdk11/linux-x86/lib
 
 cd /ham-build/android
 
