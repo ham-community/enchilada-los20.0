@@ -55,6 +55,9 @@ build:
       rm -rf certs.zip
       cd /ham-build
 
+  - name: Convert Apex Keys to PEM
+    run: /ham-recipe/scripts/apex_keys_to_pem.sh
+
   - name: Make Required Directories
     run: |
       cd /ham-build

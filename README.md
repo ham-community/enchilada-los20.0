@@ -1,4 +1,4 @@
-# LineageOS 20.0 (Enchilada/OnePlus 6) (Work in Progress)
+# LineageOS 20.0 (Enchilada/OnePlus 6)
 
 Ham Recipe for building LineageOS 20.0 for OnePlus 6 (Enchilada) (Signed Builds). With this build
 you can relock your Bootloader and still use LineageOS. 
