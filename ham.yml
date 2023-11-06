@@ -73,6 +73,9 @@ build:
   - name: Add The Muppets
     run: cp /ham-recipe/source/TheMuppets.xml /ham-build/android/.repo/local_manifests
 
+  - name: Add MindTheGapps
+    run: cp /ham-recipe/source/GAPPS.xml /ham-build/android/.repo/local_manifests
+
   - name: Patch LineageOS to Enable AVB
     run: |
       patch /ham-build/android/build/make/core/Makefile /ham-recipe/patches/core_Makefile.patch

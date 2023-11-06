@@ -74,4 +74,9 @@ if ! grep "oem_stanvbk_a" $IQFILE > /dev/null; then
    patch $IQFILE /ham-recipe/patches/init.qcom.rc.patch
 fi
 
+# MindTheGapps
+echo "# MindTheGapps" >> /ham-build/android/device/$VENDOR/$LOS_DEVICE/device.mk
+echo "" >> /ham-build/android/device/$VENDOR/$LOS_DEVICE/device.mk
+echo "include vendor/gapps/arm64/arm64-vendor.mk" >> /ham-build/android/device/$VENDOR/$LOS_DEVICE/device.mk 
+
 true
